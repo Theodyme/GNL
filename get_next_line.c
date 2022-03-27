@@ -79,7 +79,7 @@ t_list	*ft_lstclear(t_list *buf, int idx)
 
 char	*handle_eof(char **line, t_list **buf)
 {
-	if ((*buf)->content[0] != '\0')
+	if ((*buf) && (*buf)->content[0] != '\0')
 	{
 		*line = ft_lstjoin(buf);
 		free(*buf);
