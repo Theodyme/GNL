@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: flplace <flplace@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/08 13:29:01 by flplace           #+#    #+#             */
-/*   Updated: 2022/03/28 01:31:19 by flplace          ###   ########.fr       */
+/*   Updated: 2022/03/28 01:30:41 by flplace          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_lstjoin(t_list **buf)
 {
@@ -93,7 +93,7 @@ char	*handle_eof(char **line, t_list **buf)
 
 char	*get_next_line(int fd)
 {
-	static t_list		*buf = NULL;
+	static t_list		*buf[1024] = {NULL};
 	char				*line;
 	int					idx;
 	ssize_t				i;
@@ -103,18 +103,18 @@ char	*get_next_line(int fd)
 		return (NULL);
 	line = NULL;
 	idx = -1;
-	last = buf;
-	if (buf)
-		idx = ft_strchr(buf->content, '\n');
+	last = buf[fd];
+	if (buf[fd])
+		idx = ft_strchr(buf[fd]->content, '\n');
 	while (idx == -1)
 	{
-		i = ft_lstaddnread(fd, &buf, &idx, &last);
+		i = ft_lstaddnread(fd, &buf[fd], &idx, &last);
 		if (i == 0 || i == -1)
-			return (handle_eof(&line, &buf));
+			return (handle_eof(&line, &buf[fd]));
 		if (i < BUFFER_SIZE)
 			break ;
 	}
-	line = ft_lstjoin(&buf);
-	buf = ft_lstclear(buf, (idx + 1));
+	line = ft_lstjoin(&buf[fd]);
+	buf[fd] = ft_lstclear(buf[fd], (idx + 1));
 	return (line);
 }
